@@ -44,8 +44,8 @@ import sklearn.datasets.rcv1
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 
-from google.apputils import app
-import gflags as flags
+from absl import app
+from absl import flags
 from tensorflow import gfile
 
 flags.DEFINE_string('save_dir', '/tmp/data',
@@ -281,4 +281,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-  app.run()
+  app.run(main)
