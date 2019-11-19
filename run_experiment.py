@@ -42,13 +42,12 @@ from sklearn.preprocessing import StandardScaler
 from absl import app
 from absl import flags
 from tensorflow import gfile
-
 from sampling_methods.constants import AL_MAPPING
 from sampling_methods.constants import get_AL_sampler
 from sampling_methods.constants import get_wrapper_AL_mapping
 from utils import utils
 
-flags.DEFINE_string("dataset", "letter", "Dataset name")
+flags.DEFINE_string("dataset", "breast_cancer", "Dataset name")
 flags.DEFINE_string("sampling_method", "margin",
                     ("Name of sampling method to use, can be any defined in "
                      "AL_MAPPING in sampling_methods.constants"))
@@ -144,6 +143,26 @@ def generate_one_curve(X,
     results: dictionary of results for all samplers
     sampler_states: dictionary of sampler objects for debugging
   """
+  """
+  参数：
+  X:训练集
+  Y：测试集
+  sampler:来自samples_methods的采样类，假定传入的引用和采样器尚未实例化
+  score_model：用于对采样器评分的模型。
+  seed：用于数据混洗，和采样器或模型训练中其他随机种子相同
+  warmstart_size：初始统一的采样示例作为种子数据,可以是整数，可以是浮点数。浮点数表示总训练数据的百分比，整数表示原始数据集大小。
+  batch_size：每个批次中要请求的数据数量。 浮点数表示总训练数据的百分比，整数表示原始大小
+  select_model：默认为None，在这种情况下，分数模型将用于选择要标记的新数据点。模型必须实现拟合，预测和依赖于AL的方法，可能还需要Decision_function。
+  confusion: 一类标签翻转到另一类标签的百分比
+  active_p：每批次分配给主动学习百分比
+  max_points：初步限制数据集大小
+  standardize_data：是否把数据标准化为平均值为0
+  norm_data：是否规范化数据。
+  train_horizo​​n：绘制曲线的时间长度。
+  返回值：
+  results：所有采样器的结果字典
+  sampler_states：用于调试的采样器对象字典
+  """
   # TODO(lishal): add option to find best hyperparameter setting first on
   # full dataset and fix the hyperparameter for the rest of the routine
   # This will save computation and also lead to more stable behavior for the
@@ -210,7 +229,7 @@ def generate_one_curve(X,
   results = {}
   data_sizes = []
   accuracy = []
-  selected_inds = range(seed_batch)
+  selected_inds = list(range(seed_batch))
 
   # If select model is None, use score_model
   same_score_select = False

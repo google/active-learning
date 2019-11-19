@@ -51,7 +51,7 @@ from tensorflow import gfile
 
 flags.DEFINE_string('save_dir', '/tmp/data',
                     'Where to save outputs')
-flags.DEFINE_string('datasets', '',
+flags.DEFINE_string('datasets', 'breast_cancer',
                     'Which datasets to download, comma separated.')
 FLAGS = flags.FLAGS
 
@@ -72,7 +72,7 @@ def get_csv_data(filename):
   Returns:
     Dataset object
   """
-  f = gfile.GFile(filename, 'r')
+  f = gfile.GFile(filename, 'r')#获取文本操作句柄，类似于python提供的文本操作open()函数，filename是要打开的文件名，mode是以何种方式去读写，将会返回一个文本操作句柄。
   mat = []
   for l in f:
     row = l.strip()
@@ -207,7 +207,7 @@ def get_mldata(dataset):
   filename = os.path.join(save_dir, dataset[1]+'.pkl')
 
   if not gfile.Exists(save_dir):
-    gfile.MkDir(save_dir)
+    gfile.MkDir(save_dir)#这个函数不能创建多层目录，可以更换成os.makedirs（）
   if not gfile.Exists(filename):
     if dataset[0][-3:] == 'csv':
       data = get_csv_data(dataset[0])
@@ -245,15 +245,15 @@ def get_mldata(dataset):
     X = data.data
     y = data.target
     if X.shape[0] != y.shape[0]:
-      X = np.transpose(X)
-    assert X.shape[0] == y.shape[0]
+      X = np.transpose(X)#transpose()函数的作用就是调换数组的行列值的索引值，类似于求矩阵的转置
+    assert X.shape[0] == y.shape[0]#Python assert（断言）用于判断一个表达式，在表达式条件为 false 的时候触发异常
 
     data = {'data': X, 'target': y}
     pickle.dump(data, gfile.GFile(filename, 'w'))
 
 
 def main(argv):
-  del argv  # Unused.
+  del argv
   # First entry of tuple is mldata.org name, second is the name that we'll use
   # to reference the data.
   datasets = [('mnist (original)', 'mnist'), ('australian', 'australian'),
