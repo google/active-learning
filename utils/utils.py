@@ -117,7 +117,7 @@ def get_mldata(data_dir, name):
     filename = os.path.join(data_dir, dataname + ".pkl")
     if not gfile.Exists(filename):
       raise NameError("ERROR: dataset not available")
-    data = pickle.load(gfile.GFile(filename, "r"))
+    data = pickle.load(gfile.GFile(filename, "rb"))
     X = data["data"]
     y = data["target"]
     if "keras" in dataname:
@@ -183,7 +183,7 @@ def flip_label(y, percent_random):
   """
   classes = np.unique(y)
   y_orig = copy.copy(y)
-  indices = range(y_orig.shape[0])
+  indices = list(range(y_orig.shape[0]))
   np.random.shuffle(indices)
   sample = indices[0:int(len(indices) * 1.0 * percent_random)]
   fake_labels = []
