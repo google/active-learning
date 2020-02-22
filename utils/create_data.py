@@ -25,9 +25,9 @@ from __future__ import print_function
 from io import BytesIO
 import os
 import pickle
-import StringIO
+from io import StringIO
 import tarfile
-import urllib2
+from urllib.request import urlopen
 
 import keras.backend as K
 from keras.datasets import cifar10
