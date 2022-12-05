@@ -102,7 +102,7 @@ class kCenterGreedy(SamplingMethod):
     new_batch = []
 
     for _ in range(N):
-      if self.already_selected is None:
+      if self.min_distances is None:
         # Initialize centers with a randomly selected datapoint
         ind = np.random.choice(np.arange(self.n_obs))
       else:
